@@ -25,19 +25,45 @@ import os
 
 os.makedirs("models", exist_ok=True)
 
+# Force re-download (remove after one successful deploy)
+for f in ["models/person_model.pt", "models/weapon_model.pt", "models/vehicle_model.pt"]:
+    if os.path.exists(f):
+        os.remove(f)
+
 def download_from_drive(file_id, dest_path):
-    """Download a file from Google Drive using direct download URL."""
     session = requests.Session()
-    url = f"https://drive.google.com/uc?export=download&id={file_id}"
-    response = session.get(url, stream=True)
     
-    # Handle large file warning page from Google
+    # First request
+    url = "https://drive.google.com/uc?export=download"
+    response = session.get(url, params={"id": file_id}, stream=True)
+    
+    # Google shows a virus-scan warning for large files
+    # We need to confirm it to get the actual file
+    token = None
     for key, value in response.cookies.items():
         if key.startswith("download_warning"):
-            url = f"https://drive.google.com/uc?export=download&confirm={value}&id={file_id}"
-            response = session.get(url, stream=True)
+            token = value
             break
+    
+    # If no cookie token, check response content for confirmation token
+    if not token:
+        for line in response.iter_lines():
+            line = line.decode("utf-8") if isinstance(line, bytes) else line
+            if "confirm=" in line:
+                import re
+                match = re.search(r'confirm=([0-9A-Za-z_\-]+)', line)
+                if match:
+                    token = match.group(1)
+                    break
 
+    if token:
+        response = session.get(
+            url,
+            params={"id": file_id, "confirm": token},
+            stream=True
+        )
+
+    # Write the actual file
     with open(dest_path, "wb") as f:
         for chunk in response.iter_content(chunk_size=32768):
             if chunk:
