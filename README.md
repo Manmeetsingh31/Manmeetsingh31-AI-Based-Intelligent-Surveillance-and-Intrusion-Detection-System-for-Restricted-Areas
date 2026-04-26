@@ -211,15 +211,10 @@ At one point, an entire session vanished — no logs, no notebook cells, nothing
 ## 👤 Author
 
 **Manmeet Singh**  
+E-mail    -  manmeetbadhan3104@gmail.com
 B.Tech CSE — Semester 6, Punjabi University Patiala
 
 [![GitHub](https://img.shields.io/badge/GitHub-Manmeetsingh31-black?style=flat&logo=github)](https://github.com/Manmeetsingh31)
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
 
 ---
 
