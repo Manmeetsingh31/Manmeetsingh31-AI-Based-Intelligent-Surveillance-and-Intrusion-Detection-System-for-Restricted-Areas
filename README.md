@@ -3,6 +3,10 @@
 > *Can CCTV systems do more than just record footage?*  
 > SENTINEL is the answer.
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Streamlit-FF4B4B?style=for-the-badge&logo=streamlit)](https://manmeetsingh31-sentinel.streamlit.app/)
+[![GitHub](https://img.shields.io/badge/GitHub-Manmeetsingh31-black?style=for-the-badge&logo=github)](https://github.com/Manmeetsingh31)
+[![Models](https://img.shields.io/badge/Models-HuggingFace-FFD21E?style=for-the-badge&logo=huggingface)](https://huggingface.co/Manmeetsingh31/sentinel-models)
+
 SENTINEL is an AI-powered video surveillance system that processes recorded footage using **three custom-trained YOLOv8 models running in parallel** — detecting vehicles, tracking persons with persistent IDs, flagging weapons, and triggering a **CRITICAL alert** the moment an armed individual is detected.
 
 Built as a Semester 6 Minor Project — B.Tech CSE, Punjabi University Patiala.
@@ -90,6 +94,7 @@ No extra model. No extra dataset. Just geometry doing its job.
 - **Streamlit** — Dashboard UI
 - **OpenCV** — Video frame processing
 - **SQLite** — Event logging & session history
+- **Hugging Face** — Model hosting
 - **Roboflow** — Dataset sourcing (8 datasets across 3 models)
 
 ---
@@ -98,17 +103,11 @@ No extra model. No extra dataset. Just geometry doing its job.
 
 ```
 sentinel/
-├── models/
+├── surveillance_app.py    # Main Streamlit app — detection, alerts, logging, dashboard
+├── models/                # Auto-downloaded from Hugging Face on first run
 │   ├── person_model.pt
 │   ├── weapon_model.pt
 │   └── vehicle_model.pt
-├── app/
-│   ├── main.py            # Streamlit dashboard entry point
-│   ├── inference.py       # Parallel YOLOv8 model inference
-│   ├── alert.py           # Bounding box overlap → armed person logic
-│   └── logger.py          # SQLite event logging
-├── database/
-│   └── events.db
 ├── requirements.txt
 └── README.md
 ```
@@ -117,23 +116,7 @@ sentinel/
 
 ## 🚀 Getting Started
 
-### Download Models
-
-The trained model weights are hosted on Google Drive. Download and place them in the `models/` folder.
-
-| Model | Download |
-|-------|----------|
-| Person Model (`person_model.pt`) | [⬇ Download](https://drive.google.com/file/d/1jX8WjR3HXIf3DQON_rInKgSc6aqa0MU2/view?usp=drive_link) |
-| Weapon Model (`weapon_model.pt`) | [⬇ Download](https://drive.google.com/file/d/1zVU5GuPSFjl7w0Uy7KvCiqDufxhTa7PD/view?usp=drive_link) |
-| Vehicle Model (`vehicle_model.pt`) | [⬇ Download](https://drive.google.com/file/d/1GaPznM4NScxOv8XJQNXwgsvbwVyuj_Sd/view?usp=drive_link) |
-
-### Prerequisites
-
-- Python 3.9+
-- pip
-- Downloaded model weights placed in the `models/` folder
-
-### Installation
+### Run Locally
 
 ```bash
 # Clone the repository
@@ -142,15 +125,16 @@ cd sentinel
 
 # Install dependencies
 pip install -r requirements.txt
+
+# Run the app
+streamlit run surveillance_app.py
 ```
 
-### Run the App
+Open `http://localhost:8501` — models download automatically from Hugging Face on first run.
 
-```bash
-streamlit run app/main.py
-```
+### Or Try the Live Demo
 
-Open `http://localhost:8501` in your browser. Configure model paths in the sidebar, upload a video, and SENTINEL handles the rest.
+👉 **[manmeetsingh31-sentinel.streamlit.app](https://manmeetsingh31-sentinel.streamlit.app/)**
 
 ### Configure Model Paths
 
@@ -211,10 +195,18 @@ At one point, an entire session vanished — no logs, no notebook cells, nothing
 ## 👤 Author
 
 **Manmeet Singh**  
-E-mail    -  manmeetbadhan3104@gmail.com
+📧 manmeetbadhan3104@gmail.com  
 B.Tech CSE — Semester 6, Punjabi University Patiala
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Streamlit-FF4B4B?style=flat&logo=streamlit)](https://manmeetsingh31-sentinel.streamlit.app/)
 [![GitHub](https://img.shields.io/badge/GitHub-Manmeetsingh31-black?style=flat&logo=github)](https://github.com/Manmeetsingh31)
+[![Models](https://img.shields.io/badge/Models-HuggingFace-FFD21E?style=flat&logo=huggingface)](https://huggingface.co/Manmeetsingh31/sentinel-models)
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
 
 ---
 
