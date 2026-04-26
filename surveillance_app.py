@@ -16,7 +16,21 @@ from pathlib import Path
 from ultralytics import YOLO
 import io
 from PIL import Image
+import gdown
+import os
 
+os.makedirs("models", exist_ok=True)
+
+# Model paths
+if not os.path.exists("models/person_model.pt"):
+    gdown.download("https://drive.google.com/uc?id=1jX8WjR3HXIf3DQON_rInKgSc6aqa0MU2", "models/person_model.pt", quiet=False)
+
+if not os.path.exists("models/weapon_model.pt"):
+    gdown.download("https://drive.google.com/uc?id=1zVU5GuPSFjl7w0Uy7KvCiqDufxhTa7PD", "models/weapon_model.pt", quiet=False)
+
+if not os.path.exists("models/vehicle_model.pt"):
+    gdown.download("https://drive.google.com/uc?id=1GaPznM4NScxOv8XJQNXwgsvbwVyuj_Sd", "models/vehicle_model.pt", quiet=False)
+    
 # ─────────────────────────────────────────────
 # PAGE CONFIG
 # ─────────────────────────────────────────────
