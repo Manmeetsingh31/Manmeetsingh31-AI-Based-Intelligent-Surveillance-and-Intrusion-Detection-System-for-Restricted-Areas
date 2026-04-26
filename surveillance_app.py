@@ -70,6 +70,14 @@ if not os.path.exists("models/weapon_model.pt"):
 if not os.path.exists("models/vehicle_model.pt"):
     download_from_drive("1GaPznM4NScxOv8XJQNXwgsvbwVyuj_Sd", "models/vehicle_model.pt")
 
+for name, path in [("person", "models/person_model.pt"), 
+                   ("weapon", "models/weapon_model.pt"), 
+                   ("vehicle", "models/vehicle_model.pt")]:
+    size = os.path.getsize(path) if os.path.exists(path) else 0
+    with open(path, "rb") as f:
+        header = f.read(20)
+    print(f"{name}: {size} bytes | header: {header}")
+                    
 # ─────────────────────────────────────────────
 # PAGE CONFIG
 # ─────────────────────────────────────────────
