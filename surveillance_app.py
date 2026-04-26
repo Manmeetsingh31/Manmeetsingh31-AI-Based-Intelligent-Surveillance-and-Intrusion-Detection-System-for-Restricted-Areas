@@ -16,35 +16,42 @@ from pathlib import Path
 from ultralytics import YOLO
 import io
 from PIL import Image
-import gdown
  
 os.makedirs("models", exist_ok=True)
  
 # ── Auto-download model weights from Google Drive if not present ──
-if not os.path.exists("models/person_model.pt"):
-    gdown.download(
-        "https://drive.google.com/file/d/1jX8WjR3HXIf3DQON_rInKgSc6aqa0MU2/view?usp=drive_link",
-        "models/person_model.pt",
-        quiet=False,
-        fuzzy=True
-    )
- 
-if not os.path.exists("models/weapon_model.pt"):
-    gdown.download(
-        "https://drive.google.com/file/d/1zVU5GuPSFjl7w0Uy7KvCiqDufxhTa7PD/view?usp=drive_link",
-        "models/weapon_model.pt",
-        quiet=False,
-        fuzzy=True
-    )
- 
-if not os.path.exists("models/vehicle_model.pt"):
-    gdown.download(
-        "https://drive.google.com/file/d/1GaPznM4NScxOv8XJQNXwgsvbwVyuj_Sd/view?usp=drive_link",
-        "models/vehicle_model.pt",
-        quiet=False,
-        fuzzy=True
-    )
+import requests
+import os
+
+os.makedirs("models", exist_ok=True)
+
+def download_from_drive(file_id, dest_path):
+    """Download a file from Google Drive using direct download URL."""
+    session = requests.Session()
+    url = f"https://drive.google.com/uc?export=download&id={file_id}"
+    response = session.get(url, stream=True)
     
+    # Handle large file warning page from Google
+    for key, value in response.cookies.items():
+        if key.startswith("download_warning"):
+            url = f"https://drive.google.com/uc?export=download&confirm={value}&id={file_id}"
+            response = session.get(url, stream=True)
+            break
+
+    with open(dest_path, "wb") as f:
+        for chunk in response.iter_content(chunk_size=32768):
+            if chunk:
+                f.write(chunk)
+
+if not os.path.exists("models/person_model.pt"):
+    download_from_drive("1jX8WjR3HXIf3DQON_rInKgSc6aqa0MU2", "models/person_model.pt")
+
+if not os.path.exists("models/weapon_model.pt"):
+    download_from_drive("1zVU5GuPSFjl7w0Uy7KvCiqDufxhTa7PD", "models/weapon_model.pt")
+
+if not os.path.exists("models/vehicle_model.pt"):
+    download_from_drive("1GaPznM4NScxOv8XJQNXwgsvbwVyuj_Sd", "models/vehicle_model.pt")
+
 # ─────────────────────────────────────────────
 # PAGE CONFIG
 # ─────────────────────────────────────────────
