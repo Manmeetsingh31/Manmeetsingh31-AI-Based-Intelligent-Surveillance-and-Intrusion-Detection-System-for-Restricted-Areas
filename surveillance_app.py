@@ -32,40 +32,32 @@ for f in ["models/person_model.pt", "models/weapon_model.pt", "models/vehicle_mo
 
 def download_from_drive(file_id, dest_path):
     session = requests.Session()
-    
-    # First request
     url = "https://drive.google.com/uc?export=download"
-    response = session.get(url, params={"id": file_id}, stream=True)
+
+    # Step 1 — get confirmation token (don't stream this one)
+    response = session.get(url, params={"id": file_id})
     
-    # Google shows a virus-scan warning for large files
-    # We need to confirm it to get the actual file
     token = None
     for key, value in response.cookies.items():
         if key.startswith("download_warning"):
             token = value
             break
-    
-    # If no cookie token, check response content for confirmation token
+
     if not token:
-        for line in response.iter_lines():
-            line = line.decode("utf-8") if isinstance(line, bytes) else line
-            if "confirm=" in line:
-                import re
-                match = re.search(r'confirm=([0-9A-Za-z_\-]+)', line)
-                if match:
-                    token = match.group(1)
-                    break
+        import re
+        match = re.search(r'confirm=([0-9A-Za-z_\-]+)', response.text)
+        if match:
+            token = match.group(1)
 
+    # Step 2 — fresh request with token to get actual file
+    params = {"id": file_id}
     if token:
-        response = session.get(
-            url,
-            params={"id": file_id, "confirm": token},
-            stream=True
-        )
+        params["confirm"] = token
 
-    # Write the actual file
+    download_response = session.get(url, params=params, stream=True)
+
     with open(dest_path, "wb") as f:
-        for chunk in response.iter_content(chunk_size=32768):
+        for chunk in download_response.iter_content(chunk_size=32768):
             if chunk:
                 f.write(chunk)
 
