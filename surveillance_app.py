@@ -20,17 +20,23 @@ from huggingface_hub import hf_hub_download
 
 os.makedirs("models", exist_ok=True)
 
-# ── Auto-download model weights from Hugging Face if not present ──
+# ── Auto-download model weights from Hugging Face ──
 HF_REPO = "Manmeetsingh31/sentinel-models"
 
-if not os.path.exists("models/person_model.pt"):
-    hf_hub_download(repo_id=HF_REPO, filename="person_model.pt", local_dir="models")
+def download_model(filename, dest_path):
+    import shutil
+    path = hf_hub_download(
+        repo_id=HF_REPO,
+        filename=filename,
+        local_dir="models",
+        local_dir_use_symlinks=False
+    )
+    if os.path.abspath(path) != os.path.abspath(dest_path):
+        shutil.copy2(path, dest_path)
 
-if not os.path.exists("models/weapon_model.pt"):
-    hf_hub_download(repo_id=HF_REPO, filename="weapon_model.pt", local_dir="models")
-
-if not os.path.exists("models/vehicle_model.pt"):
-    hf_hub_download(repo_id=HF_REPO, filename="vehicle_model.pt", local_dir="models")
+download_model("person_model.pt",  "models/person_model.pt")
+download_model("weapon_model.pt",  "models/weapon_model.pt")
+download_model("vehicle_model.pt", "models/vehicle_model.pt")
     
 # ─────────────────────────────────────────────
 # PAGE CONFIG
@@ -469,16 +475,7 @@ def get_threat_timeline():
 from ultralytics import YOLO
 
 def load_model_safe(path):
-    try:
-        # Try normal loading
-        return YOLO(path)
-    except Exception as e:
-        print(f"⚠ Normal load failed for {path}, using safe load...")
-
-        # Safe fallback (fixes DFLoss error)
-        model = YOLO("yolov8s.pt")
-        model.load(path)
-        return model
+    return YOLO(str(path))
     
 @st.cache_resource
 def load_models(person_path, weapon_path, vehicle_path):
