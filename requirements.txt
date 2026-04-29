@@ -1,11 +1,16 @@
-# SENTINEL — Requirements
-# Install with: pip install -r requirements.txt
+# SENTINEL — Stable Requirements (Pinned)
 
-streamlit>=1.32.0
-ultralytics>=8.0.0
-opencv-python-headless>=4.8.0
-numpy>=1.24.0
-pandas>=2.0.0
-Pillow>=10.0.0
-huggingface_hub>=0.20.0
-lapx>=0.5.5
+streamlit==1.32.0
+ultralytics==8.4.37
+
+opencv-python-headless==4.9.0.80
+numpy==1.24.4
+pandas==2.0.3
+Pillow==10.0.1
+
+torch==2.2.0
+torchvision==0.17.0
+torchaudio==2.2.0
+
+lapx==0.5.5
+huggingface_hub==0.20.3
